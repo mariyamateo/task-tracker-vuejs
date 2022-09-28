@@ -26,10 +26,29 @@ export default {
   },
   methods: {
     deleteTodo(id) {
-      this.todos = this.todos.filter((todo) => todo.id !== id);
+      // this.todos = this.todos.filter((todo) => todo.id !== id);
+      axios
+        .delete(`https://jsonplaceholder.typicode.com/todos/${id}`)
+        .then((res) => {
+          this.todos = this.todos.filter((todo) => todo.id !== id);
+          return res;
+        })
+        .catch((error) => {
+          return Promise.reject(error);
+        });
     },
     addTodo(newTodo) {
-      this.todos = [...this.todos, newTodo];
+      const { title, completed } = newTodo;
+      axios
+        .post("https://jsonplaceholder.typicode.com/todos", {
+          title,
+          completed,
+        })
+        .then((res) => (this.todos = [...this.todos, res.data]))
+        .catch((error) => {
+          return Promise.reject(error);
+        });
+      // this.todos = [...this.todos, newTodo];
     },
   },
   created() {

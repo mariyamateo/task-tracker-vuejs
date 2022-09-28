@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <Header />
     <AddTodo v-on:add-todo="addTodo" />
     <Todos v-bind:todos="todos" v-on:del-todo="deleteTodo" />
   </div>
@@ -8,32 +9,19 @@
 <script>
 import Todos from "./components/Todos";
 import AddTodo from "./components/AddTodo";
+import Header from "./components/layout/header";
+import axios from "axios";
 
 export default {
   name: "App",
   components: {
     Todos,
+    Header,
     AddTodo,
   },
   data() {
     return {
-      todos: [
-        {
-          id: 1,
-          title: "Todo One",
-          completed: false,
-        },
-        {
-          id: 2,
-          title: "Todo Two",
-          completed: false,
-        },
-        {
-          id: 3,
-          title: "Todo Three",
-          completed: true,
-        },
-      ],
+      todos: [],
     };
   },
   methods: {
@@ -43,6 +31,14 @@ export default {
     addTodo(newTodo) {
       this.todos = [...this.todos, newTodo];
     },
+  },
+  created() {
+    axios
+      .get("https://jsonplaceholder.typicode.com/todos?_limit=5")
+      .then((res) => (this.todos = res.data))
+      .catch((error) => {
+        return Promise.reject(error);
+      });
   },
 };
 </script>
